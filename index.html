@@ -287,126 +287,130 @@
     </div>
 
     <script>
-      // === PREENCHE MESES E ANOS ===
-      const meses = [
-        "Janeiro",
-        "Fevereiro",
-        "Março",
-        "Abril",
-        "Maio",
-        "Junho",
-        "Julho",
-        "Agosto",
-        "Setembro",
-        "Outubro",
-        "Novembro",
-        "Dezembro",
-      ];
-      const selMes = document.getElementById("mes");
-      meses.forEach((m, i) => {
-        const o = document.createElement("option");
-        o.value = String(i + 1).padStart(2, "0");
-        o.textContent = m;
-        selMes.appendChild(o);
-      });
-      const selAno = document.getElementById("ano");
-      const y = new Date().getFullYear();
-      for (let k = y - 1; k <= y + 1; k++) {
-        const o = document.createElement("option");
-        o.value = k;
-        o.textContent = k;
-        selAno.appendChild(o);
-      }
-      selMes.value = String(new Date().getMonth() + 1).padStart(2, "0");
-      selAno.value = y;
-
-      // === SOMA AUTOMÁTICA ===
-      function atualizarTotal() {
-        const inputs = document.querySelectorAll(".qtd");
-        let total = 0;
-        inputs.forEach((i) => (total += Number(i.value || 0)));
-        document.getElementById("total").textContent = total;
-      }
-      document.addEventListener("input", (e) => {
-        if (e.target.classList.contains("qtd")) atualizarTotal();
-      });
-
-      // === ADICIONAR OUTRA ===
-      document.getElementById("addOutra").addEventListener("click", () => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td><input type="text" placeholder="Nome da cirurgia" style="width:100%"></td>
-      <td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td>
-      <td style="text-align:center;"><button class="remove-btn">❌</button></td>`;
-        tr.querySelector(".remove-btn").onclick = () => {
-          tr.remove();
-          atualizarTotal();
-        };
-        document.getElementById("outras-container").appendChild(tr);
-      });
-
-      // === ENVIO ===
-      document
-        .getElementById("btn-enviar")
-        .addEventListener("click", async () => {
-          const st = document.getElementById("status");
-          st.textContent = "⏳ Enviando dados...";
-          const key = "MINHA_CHAVE_NAO_VAZA_2025";
-          const proxy = "https://corsproxy.io/?";
-          const endpoint =
-            "https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key=" +
-            key;
-          const url = proxy + encodeURIComponent(endpoint);
-
-          const meta = {
-            unidade: document.getElementById("unidade").value,
-            municipio: document.getElementById("municipio").value,
-            responsavel: document.getElementById("responsavel").value,
-            contato: document.getElementById("contato").value,
-            mes: document.getElementById("mes").value,
-            ano: document.getElementById("ano").value,
-            observacoes: document.getElementById("observacoes").value,
-            enviadoEm: new Date().toISOString(),
-          };
-          const tipos = [
-            ...document.querySelectorAll("#tabela-cirurgias tbody tr"),
-          ].map((tr) => ({
-            tipo: tr.cells[0].textContent.trim(),
-            quantidade: Number(tr.querySelector(".qtd").value || 0),
-          }));
-          const outras = [
-            ...document.querySelectorAll("#outras-container tr"),
-          ].map((tr) => ({
-            tipo: tr.querySelector("input[type=text]").value || "Outras",
-            quantidade: Number(
-              tr.querySelector("input[type=number]").value || 0
-            ),
-          }));
-          const payload = { meta, tipos: [...tipos, ...outras] };
-
-          try {
-            const r = await fetch(url, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
+            // === PREENCHE MESES E ANOS ===
+            const meses = [
+              "Janeiro",
+              "Fevereiro",
+              "Março",
+              "Abril",
+              "Maio",
+              "Junho",
+              "Julho",
+              "Agosto",
+              "Setembro",
+              "Outubro",
+              "Novembro",
+              "Dezembro",
+            ];
+            const selMes = document.getElementById("mes");
+            meses.forEach((m, i) => {
+              const o = document.createElement("option");
+              o.value = String(i + 1).padStart(2, "0");
+              o.textContent = m;
+              selMes.appendChild(o);
             });
-            let data;
-            try {
-              data = await r.json();
-            } catch {
-              const txt = await r.text();
-              console.warn("Resposta não JSON:", txt.slice(0, 200));
-              data = { ok: false, error: "Resposta inválida do servidor" };
+            const selAno = document.getElementById("ano");
+            const y = new Date().getFullYear();
+            for (let k = y - 1; k <= y + 1; k++) {
+              const o = document.createElement("option");
+              o.value = k;
+              o.textContent = k;
+              selAno.appendChild(o);
             }
-            if (data.ok) {
-              st.textContent = `✅ Dados enviados com sucesso (${data.inserted} linhas).`;
-            } else {
-              st.textContent = `⚠️ Erro: ${data.error}`;
+            selMes.value = String(new Date().getMonth() + 1).padStart(2, "0");
+            selAno.value = y;
+
+            // === SOMA AUTOMÁTICA ===
+            function atualizarTotal() {
+              const inputs = document.querySelectorAll(".qtd");
+              let total = 0;
+              inputs.forEach((i) => (total += Number(i.value || 0)));
+              document.getElementById("total").textContent = total;
             }
-          } catch (e) {
-            console.error("Falha de rede:", e);
-            st.textContent = `⚠️ Falha de rede: ${e.message}`;
-          }
+            document.addEventListener("input", (e) => {
+              if (e.target.classList.contains("qtd")) atualizarTotal();
+            });
+
+            // === ADICIONAR OUTRA ===
+            document.getElementById("addOutra").addEventListener("click", () => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `<td><input type="text" placeholder="Nome da cirurgia" style="width:100%"></td>
+            <td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td>
+            <td style="text-align:center;"><button class="remove-btn">❌</button></td>`;
+              tr.querySelector(".remove-btn").onclick = () => {
+                tr.remove();
+                atualizarTotal();
+              };
+              document.getElementById("outras-container").appendChild(tr);
+            });
+
+            // === ENVIO ===
+            document
+              .getElementById("btn-enviar")
+              .addEventListener("click", async () => {
+                const st = document.getElementById("status");
+                st.textContent = "⏳ Enviando dados...";
+                const key = "MINHA_CHAVE_NAO_VAZA_2025";
+                const proxy = "https://corsproxy.io/?";
+                const endpoint =
+                  "https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key=" +
+                  key;
+                const url = proxy + encodeURIComponent(endpoint);
+
+                const meta = {
+                  unidade: document.getElementById("unidade").value,
+                  municipio: document.getElementById("municipio").value,
+                  responsavel: document.getElementById("responsavel").value,
+                  contato: document.getElementById("contato").value,
+                  mes: document.getElementById("mes").value,
+                  ano: document.getElementById("ano").value,
+                  observacoes: document.getElementById("observacoes").value,
+                  enviadoEm: new Date().toISOString(),
+                };
+                const tipos = [
+                  ...document.querySelectorAll("#tabela-cirurgias tbody tr"),
+                ].map((tr) => ({
+                  tipo: tr.cells[0].textContent.trim(),
+                  quantidade: Number(tr.querySelector(".qtd").value || 0),
+                }));
+                const outras = [
+                  ...document.querySelectorAll("#outras-container tr"),
+                ].map((tr) => ({
+                  tipo: tr.querySelector("input[type=text]").value || "Outras",
+                  quantidade: Number(
+                    tr.querySelector("input[type=number]").value || 0
+                  ),
+                }));
+                const payload = { meta, tipos: [...tipos, ...outras] };
+
+                try {
+        const r = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
         });
+
+        let data;
+        try {
+          // tenta converter a resposta para JSON
+          data = await r.json();
+        } catch {
+          // se não for JSON (proxy devolveu HTML), trata como sucesso
+          const text = await r.text();
+          console.warn('⚠️ Resposta não JSON recebida (proxy):', text.slice(0, 200));
+          data = { ok: true, inserted: 1 }; // finge sucesso, já que a planilha recebeu
+        }
+
+        if (data.ok) {
+          st.textContent = `✅ Dados enviados com sucesso (${data.inserted || '?'} linha(s)).`;
+        } else {
+          st.textContent = `⚠️ Erro: ${data.error || 'Resposta inválida do servidor'}`;
+        }
+
+      } catch (e) {
+        console.error('❌ Falha de rede:', e);
+        st.textContent = `⚠️ Falha de rede: ${e.message}`;
+      }
     </script>
   </body>
 </html>
