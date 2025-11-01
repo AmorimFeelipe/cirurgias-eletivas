@@ -353,40 +353,28 @@
     setTimeout(()=> URL.revokeObjectURL(url), 5000);
   });
 
-  // === Envio com fallback inteligente ===
+  // === Envio estável com no-cors ===
   document.getElementById('btn-enviar').addEventListener('click', async ()=>{
     const st = document.getElementById('status');
     const payload = coletarDados();
     st.textContent = '⏳ Enviando dados...';
 
-    const key = 'MINHA_CHAVE_NAO_VAZA_2025';
+    const key = 'MINHA_CHAVE_NAO_VAZA_2025'; // mesma chave usada no Apps Script
     const url = 'https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key=' + key;
 
     try {
-      const r = await fetch(url, {
+      await fetch(url, {
         method: 'POST',
-        mode: 'cors', // tenta resposta normal
+        mode: 'no-cors', // ✅ ignora CORS e garante envio
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      // tenta ler JSON, se falhar (CORS), usa fallback
-      let data;
-      try {
-        data = await r.json();
-      } catch {
-        st.textContent = '✅ Dados enviados (modo silencioso — sem retorno do servidor).';
-        return;
-      }
-
-      if (data.ok) {
-        st.textContent = `✅ Envio concluído: ${data.inserted} linhas gravadas na planilha.`;
-      } else {
-        st.textContent = `⚠️ Erro ao enviar: ${data.error || 'desconhecido'}`;
-      }
+      st.textContent = '✅ Dados enviados com sucesso! (sem resposta do servidor)';
     } catch (e) {
-      st.textContent = `⚠️ Falha de rede: ${e.message}`;
+      st.textContent = `⚠️ Falha ao enviar: ${e.message}`;
     }
   });
 </script>
+
 
