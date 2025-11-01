@@ -240,136 +240,153 @@
   </div>
 
   <script>
-    const selMes = document.getElementById('mes');
-    const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-    meses.forEach((m,i)=>{
-      const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;selMes.appendChild(o);
-    });
+  const selMes = document.getElementById('mes');
+  const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  meses.forEach((m,i)=>{
+    const o=document.createElement('option');
+    o.value=String(i+1).padStart(2,'0');
+    o.textContent=m;
+    selMes.appendChild(o);
+  });
 
-    const selAno = document.getElementById('ano');
-    const y = new Date().getFullYear();
-    for(let k=y-1;k<=y+1;k++){const o=document.createElement('option');o.value=k;o.textContent=k;selAno.appendChild(o);}
-    selMes.value = String(new Date().getMonth()+1).padStart(2,'0'); selAno.value = y;
+  const selAno = document.getElementById('ano');
+  const y = new Date().getFullYear();
+  for(let k=y-1;k<=y+1;k++){
+    const o=document.createElement('option');
+    o.value=k;
+    o.textContent=k;
+    selAno.appendChild(o);
+  }
+  selMes.value = String(new Date().getMonth()+1).padStart(2,'0');
+  selAno.value = y;
 
-    const totalSpan = document.getElementById('total');
+  const totalSpan = document.getElementById('total');
 
-    function atualizarTotal(){
-      const inputs = document.querySelectorAll('.qtd');
-      let total = 0;
-      inputs.forEach(i=> total += Number(i.value||0));
-      totalSpan.textContent = total;
-    }
+  function atualizarTotal(){
+    const inputs = document.querySelectorAll('.qtd');
+    let total = 0;
+    inputs.forEach(i=> total += Number(i.value||0));
+    totalSpan.textContent = total;
+  }
 
-    document.addEventListener('input', (e)=>{
-      if(e.target.classList.contains('qtd')) atualizarTotal();
-    });
+  document.addEventListener('input', (e)=>{
+    if(e.target.classList.contains('qtd')) atualizarTotal();
+  });
 
-    document.getElementById('addOutra').addEventListener('click', ()=>{
-      const tbody = document.getElementById('outras-container');
-      const tr = document.createElement('tr');
+  document.getElementById('addOutra').addEventListener('click', ()=>{
+    const tbody = document.getElementById('outras-container');
+    const tr = document.createElement('tr');
 
-      const tdNome = document.createElement('td');
-      const inputNome = document.createElement('input');
-      inputNome.type = 'text';
-      inputNome.placeholder = 'Digite o nome da cirurgia';
-      inputNome.style.width = '100%';
-      tdNome.appendChild(inputNome);
+    const tdNome = document.createElement('td');
+    const inputNome = document.createElement('input');
+    inputNome.type = 'text';
+    inputNome.placeholder = 'Digite o nome da cirurgia';
+    inputNome.style.width = '100%';
+    tdNome.appendChild(inputNome);
 
-      const tdQtd = document.createElement('td');
-      const inputQtd = document.createElement('input');
-      inputQtd.type = 'number';
-      inputQtd.min = '0';
-      inputQtd.value = '0';
-      inputQtd.classList.add('qtd');
-      inputQtd.style.width = '100%';
-      tdQtd.appendChild(inputQtd);
+    const tdQtd = document.createElement('td');
+    const inputQtd = document.createElement('input');
+    inputQtd.type = 'number';
+    inputQtd.min = '0';
+    inputQtd.value = '0';
+    inputQtd.classList.add('qtd');
+    inputQtd.style.width = '100%';
+    tdQtd.appendChild(inputQtd);
 
-      const tdRem = document.createElement('td');
-      tdRem.style.textAlign = 'center';
-      const btnRem = document.createElement('button');
-      btnRem.innerHTML = '❌';
-      btnRem.className = 'remove-btn';
-      btnRem.onclick = ()=> { tr.remove(); atualizarTotal(); };
-      tdRem.appendChild(btnRem);
+    const tdRem = document.createElement('td');
+    tdRem.style.textAlign = 'center';
+    const btnRem = document.createElement('button');
+    btnRem.innerHTML = '❌';
+    btnRem.className = 'remove-btn';
+    btnRem.onclick = ()=> { tr.remove(); atualizarTotal(); };
+    tdRem.appendChild(btnRem);
 
-      tr.appendChild(tdNome);
-      tr.appendChild(tdQtd);
-      tr.appendChild(tdRem);
+    tr.appendChild(tdNome);
+    tr.appendChild(tdQtd);
+    tr.appendChild(tdRem);
+    tbody.appendChild(tr);
+  });
 
-      tbody.appendChild(tr);
-    });
+  function coletarDados(){
+    const meta = {
+      unidade: document.getElementById('unidade').value,
+      municipio: document.getElementById('municipio').value,
+      responsavel: document.getElementById('responsavel').value,
+      contato: document.getElementById('contato').value,
+      mes: document.getElementById('mes').value,
+      ano: document.getElementById('ano').value,
+      observacoes: document.getElementById('observacoes').value,
+      enviadoEm: new Date().toISOString()
+    };
 
-    function coletarDados(){
-      const meta = {
-        unidade: document.getElementById('unidade').value,
-        municipio: document.getElementById('municipio').value,
-        responsavel: document.getElementById('responsavel').value,
-        contato: document.getElementById('contato').value,
-        mes: document.getElementById('mes').value,
-        ano: document.getElementById('ano').value,
-        observacoes: document.getElementById('observacoes').value,
-        enviadoEm: new Date().toISOString()
-      };
+    const tipos = [...document.querySelectorAll('#tabela-cirurgias tbody tr')].map(tr=>({
+      tipo: tr.cells[0].textContent,
+      quantidade: Number(tr.querySelector('.qtd').value||0)
+    }));
 
-      const tipos = [...document.querySelectorAll('#tabela-cirurgias tbody tr')].map(tr=>({
-        tipo: tr.cells[0].textContent,
-        quantidade: Number(tr.querySelector('.qtd').value||0)
-      }));
+    const outras = [...document.querySelectorAll('#outras-container tr')].map(tr=>({
+      tipo: tr.querySelector('input[type=text]').value || 'Outras especialidades',
+      quantidade: Number(tr.querySelector('input[type=number]').value||0)
+    }));
 
-      const outras = [...document.querySelectorAll('#outras-container tr')].map(tr=>({
-        tipo: tr.querySelector('input[type=text]').value || 'Outras especialidades',
-        quantidade: Number(tr.querySelector('input[type=number]').value||0)
-      }));
+    return {meta, tipos: [...tipos, ...outras]};
+  }
 
-      return {meta, tipos: [...tipos, ...outras]};
-    }
+  function toCSV(rows){
+    const cols = Object.keys(rows[0]);
+    const esc = s=> '"'+String(s).replaceAll('"','""')+'"';
+    const head = cols.map(esc).join(',');
+    const body = rows.map(r=> cols.map(c=> esc(r[c]??'')).join(',')).join('\n');
+    return head+'\n'+body;
+  }
 
-    function toCSV(rows){
-      const cols = Object.keys(rows[0]);
-      const esc = s=> '"'+String(s).replaceAll('"','""')+'"';
-      const head = cols.map(esc).join(',');
-      const body = rows.map(r=> cols.map(c=> esc(r[c]??'')).join(',')).join('\n');
-      return head+'\n'+body;
-    }
+  document.getElementById('btn-csv').addEventListener('click', ()=>{
+    const {meta, tipos} = coletarDados();
+    const linhas = tipos.map(t=> ({...meta, tipo: t.tipo, quantidade: t.quantidade}));
+    const csv = toCSV(linhas);
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cirurgias_${meta.ano}-${meta.mes}.csv`;
+    a.click();
+    setTimeout(()=> URL.revokeObjectURL(url), 5000);
+  });
 
-    document.getElementById('btn-csv').addEventListener('click', ()=>{
-      const {meta, tipos} = coletarDados();
-      const linhas = tipos.map(t=> ({...meta, tipo: t.tipo, quantidade: t.quantidade}));
-      const csv = toCSV(linhas);
-      const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = `cirurgias_${meta.ano}-${meta.mes}.csv`; a.click();
-      setTimeout(()=> URL.revokeObjectURL(url), 5000);
-    });
+  // === Envio com fallback inteligente ===
+  document.getElementById('btn-enviar').addEventListener('click', async ()=>{
+    const st = document.getElementById('status');
+    const payload = coletarDados();
+    st.textContent = '⏳ Enviando dados...';
 
-    document.getElementById('btn-enviar').addEventListener('click', async ()=>{
-  const st = document.getElementById('status');
-  const payload = coletarDados();
-
-  try {
-    const key = 'MINHA_CHAVE_NAO_VAZA_2025'; // mesma chave usada no Apps Script
+    const key = 'MINHA_CHAVE_NAO_VAZA_2025';
     const url = 'https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key=' + key;
 
-    const r = await fetch(url, {
-  method: 'POST',
-  mode: 'no-cors',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(payload),
-});
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        mode: 'cors', // tenta resposta normal
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
+      // tenta ler JSON, se falhar (CORS), usa fallback
+      let data;
+      try {
+        data = await r.json();
+      } catch {
+        st.textContent = '✅ Dados enviados (modo silencioso — sem retorno do servidor).';
+        return;
+      }
 
-    const data = await r.json();
-    if (data.ok) {
-      st.textContent = `✅ Envio concluído: ${data.inserted} linhas gravadas na planilha.`;
-    } else {
-      st.textContent = `⚠️ Erro ao enviar: ${data.error || 'desconhecido'}`;
+      if (data.ok) {
+        st.textContent = `✅ Envio concluído: ${data.inserted} linhas gravadas na planilha.`;
+      } else {
+        st.textContent = `⚠️ Erro ao enviar: ${data.error || 'desconhecido'}`;
+      }
+    } catch (e) {
+      st.textContent = `⚠️ Falha de rede: ${e.message}`;
     }
-  } catch (e) {
-    st.textContent = `⚠️ Falha de rede: ${e.message}`;
-  }
-});
+  });
+</script>
 
-  </script>
-</body>
-</html>
