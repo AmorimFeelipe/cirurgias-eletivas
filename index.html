@@ -21,7 +21,6 @@
       transition: transform 0.2s ease-in-out;
     }
     .container:hover { transform: translateY(-2px); }
-
     h1 {
       text-align: center;
       color: #4c1d95;
@@ -34,14 +33,12 @@
       padding-bottom: 5px;
       margin-top: 30px;
     }
-
     label {
       display: block;
       margin-top: 15px;
       font-weight: 600;
       color: #374151;
     }
-
     select, input, textarea {
       width: 100%;
       padding: 12px;
@@ -53,13 +50,11 @@
       box-sizing: border-box;
       background-color: #fff;
     }
-
     select:focus, input:focus, textarea:focus {
       outline: none;
       border-color: #6d28d9;
       box-shadow: 0 0 0 3px rgba(109,40,217,0.2);
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -85,7 +80,6 @@
     tr:hover td {
       background-color: #eef2ff;
     }
-
     .qtd {
       width: 100%;
       border-radius: 8px;
@@ -99,7 +93,6 @@
       border-color: #6d28d9;
       box-shadow: 0 0 0 3px rgba(109,40,217,0.15);
     }
-
     .remove-btn {
       background: none;
       border: none;
@@ -110,7 +103,6 @@
       transition: transform 0.2s ease;
     }
     .remove-btn:hover { transform: scale(1.2); }
-
     .btn-add {
       margin-top: 15px;
       background-color: #10b981;
@@ -124,14 +116,12 @@
       transition: all 0.2s ease;
     }
     .btn-add:hover { background-color: #059669; }
-
     .total {
       font-weight: bold;
       color: #059669;
       margin-top: 20px;
       font-size: 1.1em;
     }
-
     .actions {
       display: flex;
       gap: 10px;
@@ -139,7 +129,6 @@
       justify-content: center;
       flex-wrap: wrap;
     }
-
     button.btn-primary {
       background-color: #6d28d9;
       color: #fff;
@@ -150,7 +139,6 @@
       font-weight: 600;
     }
     button.btn-primary:hover { background-color: #4c1d95; }
-
     button.btn-secondary {
       background-color: #e5e7eb;
       color: #374151;
@@ -196,35 +184,25 @@
     <h2>Cirurgias realizadas</h2>
     <table id="tabela-cirurgias">
       <thead>
-        <tr>
-          <th style="width: 70%;">Tipo de Cirurgia</th>
-          <th style="width: 30%;">Quantidade</th>
-        </tr>
+        <tr><th>Tipo de Cirurgia</th><th>Quantidade</th></tr>
       </thead>
       <tbody>
-        <tr><td>Cirurgia Geral rotina</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
-        <tr><td>Cirurgia Urológica</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
-        <tr><td>Cabeça e Pescoço</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
-        <tr><td>Cirurgia Torácica</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
-        <tr><td>Buco Maxilo</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
-        <tr><td>Cirurgia de Mão</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
-        <tr><td>Otorrino</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
-        <tr><td>Ortopedia</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Cirurgia Geral rotina</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
+        <tr><td>Cirurgia Urológica</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
+        <tr><td>Cabeça e Pescoço</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
+        <tr><td>Cirurgia Torácica</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
+        <tr><td>Buco Maxilo</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
+        <tr><td>Cirurgia de Mão</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
+        <tr><td>Otorrino</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
+        <tr><td>Ortopedia</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
       </tbody>
     </table>
 
-    <h3 style="margin-top:20px; color:#4b5563;">Outras Especialidades</h3>
-    <table id="outras-tabela" style="width:100%; border-collapse:collapse;">
-      <thead>
-        <tr>
-          <th style="width:70%;">Tipo de Cirurgia</th>
-          <th style="width:25%;">Quantidade</th>
-          <th style="width:5%; text-align:center;">Remover</th>
-        </tr>
-      </thead>
+    <h3>Outras Especialidades</h3>
+    <table style="width:100%;">
+      <thead><tr><th>Tipo de Cirurgia</th><th>Quantidade</th><th></th></tr></thead>
       <tbody id="outras-container"></tbody>
     </table>
-
     <button type="button" class="btn-add" id="addOutra">➕ Adicionar Cirurgia</button>
 
     <div class="total">Total de Cirurgias: <span id="total">0</span></div>
@@ -233,39 +211,24 @@
     <textarea id="observacoes" placeholder="Alguma observação relevante…"></textarea>
 
     <div class="actions">
-      <button class="btn-primary" id="btn-csv">⬇️ Baixar CSV</button>
-      <button class="btn-secondary" id="btn-enviar">🚀 Enviar (POST opcional)</button>
+      <button class="btn-primary" id="btn-enviar">🚀 Enviar</button>
     </div>
     <div id="status" style="margin-top:15px;text-align:center;color:#6b7280;font-size:0.95em;"></div>
   </div>
 
   <script>
-  // === PREENCHE MESES E ANOS ===
-  const selMes = document.getElementById('mes');
-  const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  // === MESES E ANOS ===
+  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  const selMes=document.getElementById('mes'), selAno=document.getElementById('ano');
   meses.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;selMes.appendChild(o);});
-  const selAno = document.getElementById('ano'); const y = new Date().getFullYear();
-  for(let k=y-1;k<=y+1;k++){const o=document.createElement('option');o.value=k;o.textContent=k;selAno.appendChild(o);}
-  selMes.value = String(new Date().getMonth()+1).padStart(2,'0'); selAno.value = y;
+  const anoAtual=new Date().getFullYear();
+  for(let k=anoAtual-1;k<=anoAtual+1;k++){const o=document.createElement('option');o.value=k;o.textContent=k;selAno.appendChild(o);}
+  selMes.value=String(new Date().getMonth()+1).padStart(2,'0'); selAno.value=anoAtual;
 
-  // === TOTAL AUTOMÁTICO ===
-  const totalSpan = document.getElementById('total');
-  function atualizarTotal(){const inputs=document.querySelectorAll('.qtd');let total=0;inputs.forEach(i=> total+=Number(i.value||0));totalSpan.textContent=total;}
-  document.addEventListener('input',(e)=>{if(e.target.classList.contains('qtd')) atualizarTotal();});
+  function atualizarTotal(){let t=0;document.querySelectorAll('.qtd').forEach(i=>t+=Number(i.value||0));document.getElementById('total').textContent=t;}
+  document.addEventListener('input',e=>{if(e.target.classList.contains('qtd')) atualizarTotal();});
+  document.getElementById('addOutra').addEventListener('click',()=>{const tbody=document.getElementById('outras-container');const tr=document.createElement('tr');tr.innerHTML=`<td><input type="text" placeholder="Digite o nome da cirurgia" style="width:100%"></td><td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td><td><button class="remove-btn">❌</button></td>`;tr.querySelector('.remove-btn').onclick=()=>{tr.remove();atualizarTotal();};tbody.appendChild(tr);});
 
-  // === ADICIONAR OUTRA CIRURGIA ===
-  document.getElementById('addOutra').addEventListener('click', ()=>{
-    const tbody=document.getElementById('outras-container');
-    const tr=document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="text" placeholder="Digite o nome da cirurgia" style="width:100%"></td>
-      <td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td>
-      <td style="text-align:center;"><button class="remove-btn">❌</button></td>`;
-    tr.querySelector('.remove-btn').onclick=()=>{tr.remove();atualizarTotal();};
-    tbody.appendChild(tr);
-  });
-
-  // === COLETAR DADOS ===
   function coletarDados(){
     const meta={
       unidade:document.getElementById('unidade').value,
@@ -277,55 +240,33 @@
       observacoes:document.getElementById('observacoes').value,
       enviadoEm:new Date().toISOString()
     };
-    const tipos=[...document.querySelectorAll('#tabela-cirurgias tbody tr')]
-      .map(tr=>({tipo:tr.cells[0].textContent.trim(),quantidade:Number(tr.querySelector('.qtd').value||0)}));
-    const outras=[...document.querySelectorAll('#outras-container tr')]
-      .map(tr=>({tipo:tr.querySelector('input[type=text]').value||'Outras especialidades',quantidade:Number(tr.querySelector('input[type=number]').value||0)}));
+    const tipos=[...document.querySelectorAll('#tabela-cirurgias tbody tr')].map(tr=>({tipo:tr.cells[0].textContent.trim(),quantidade:Number(tr.querySelector('.qtd').value||0)}));
+    const outras=[...document.querySelectorAll('#outras-container tr')].map(tr=>({tipo:tr.querySelector('input[type=text]').value||'Outras',quantidade:Number(tr.querySelector('input[type=number]').value||0)}));
     return {meta,tipos:[...tipos,...outras]};
   }
 
-  // === ENVIO PARA O APPS SCRIPT ===
   document.getElementById('btn-enviar').addEventListener('click', async ()=>{
     const st=document.getElementById('status');
     const payload=coletarDados();
-
-    if(!payload.meta.unidade){
-      st.textContent="⚠️ Selecione uma unidade antes de enviar.";
-      return;
-    }
-
+    if(!payload.meta.unidade){st.textContent="⚠️ Selecione uma unidade antes de enviar.";return;}
     st.textContent="⏳ Enviando dados...";
     const key='MINHA_CHAVE_NAO_VAZA_2025';
-    const url='https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key='+key;
-
-    try {
-      const r = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      // 🔧 Alguns navegadores bloqueiam leitura de resposta JSON por CORS.
-      // Então testamos com fallback seguro:
-      let data;
-      try { data = await r.json(); } catch { data = { ok: true, inserted: 0 }; }
-
-      if (data.ok) {
-        st.textContent = `✅ Dados enviados com sucesso${data.inserted ? ` (${data.inserted} linhas)` : ''}!`;
-        document.getElementById('outras-container').innerHTML = '';
+    const url='https://script.google.com/macros/s/SEU_CODIGO_DO_APP_SCRIPT/exec?key='+key;
+    try{
+      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      const data=await r.json();
+      if(data.ok){
+        st.textContent=`✅ Envio concluído: ${data.inserted} linha(s) gravada(s)!`;
         document.querySelectorAll('.qtd').forEach(i=>i.value=0);
+        document.getElementById('outras-container').innerHTML='';
         atualizarTotal();
       } else {
-        st.textContent = `⚠️ Erro: ${data.error||'Erro desconhecido'}`;
+        st.textContent=`⚠️ Erro: ${data.error||'Erro desconhecido'}`;
       }
-
-    } catch (e) {
-      // Caso falhe completamente (sem conexão ou CORS bloqueado)
-      st.textContent = "✅ Dados enviados com sucesso! (sem resposta do servidor)";
+    }catch(e){
+      st.textContent=`⚠️ Falha de rede: ${e.message}`;
     }
   });
-</script>
-
-
-
-
+  </script>
+</body>
+</html>
