@@ -1,272 +1,399 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Registro de Cirurgias Eletivas</title>
-  <style>
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      background: linear-gradient(180deg, #f7f7fb 0%, #f0f0f8 100%);
-      margin: 0;
-      color: #1f2937;
-    }
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #fff;
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease-in-out;
-    }
-    .container:hover { transform: translateY(-2px); }
-    h1 {
-      text-align: center;
-      color: #4c1d95;
-      margin-bottom: 10px;
-      font-size: 1.8em;
-    }
-    h2 {
-      color: #374151;
-      border-bottom: 2px solid #6d28d9;
-      padding-bottom: 5px;
-      margin-top: 30px;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
-      color: #374151;
-    }
-    select, input, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 6px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-      transition: all 0.2s ease;
-      box-sizing: border-box;
-      background-color: #fff;
-    }
-    select:focus, input:focus, textarea:focus {
-      outline: none;
-      border-color: #6d28d9;
-      box-shadow: 0 0 0 3px rgba(109,40,217,0.2);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    th, td {
-      border-bottom: 1px solid #e5e7eb;
-      padding: 12px 10px;
-      text-align: left;
-      vertical-align: middle;
-    }
-    th {
-      background-color: #f9fafb;
-      font-weight: 700;
-      color: #4b5563;
-    }
-    tr:nth-child(even) td {
-      background-color: #f9fafc;
-    }
-    tr:hover td {
-      background-color: #eef2ff;
-    }
-    .qtd {
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-      transition: all 0.2s ease;
-      box-sizing: border-box;
-    }
-    .qtd:focus {
-      border-color: #6d28d9;
-      box-shadow: 0 0 0 3px rgba(109,40,217,0.15);
-    }
-    .remove-btn {
-      background: none;
-      border: none;
-      color: #dc2626;
-      font-weight: bold;
-      font-size: 20px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .remove-btn:hover { transform: scale(1.2); }
-    .btn-add {
-      margin-top: 15px;
-      background-color: #10b981;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 15px;
-      transition: all 0.2s ease;
-    }
-    .btn-add:hover { background-color: #059669; }
-    .total {
-      font-weight: bold;
-      color: #059669;
-      margin-top: 20px;
-      font-size: 1.1em;
-    }
-    .actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 25px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    button.btn-primary {
-      background-color: #6d28d9;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 20px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    button.btn-primary:hover { background-color: #4c1d95; }
-    button.btn-secondary {
-      background-color: #e5e7eb;
-      color: #374151;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 20px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    button.btn-secondary:hover { background-color: #d1d5db; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Registro de Cirurgias Eletivas</h1>
-
-    <label for="unidade">Unidade de Saúde *</label>
-    <select id="unidade" required>
-      <option value="">Selecione...</option>
-      <option>Fundação Hospital Adriano Jorge</option>
-      <option>Hospital Geraldo da Rocha</option>
-      <option>FCECON</option>
-      <option>Hospital Francisca Mendes</option>
-      <option>ICAM</option>
-      <option>Chapot Prevost</option>
-    </select>
-
-    <label>Município</label>
-    <input type="text" id="municipio" value="Manaus/AM" readonly />
-
-    <label>Responsável pelo preenchimento *</label>
-    <input type="text" id="responsavel" required />
-
-    <label>Contato (e-mail ou telefone)</label>
-    <input type="text" id="contato" />
-
-    <label>Mês de referência *</label>
-    <select id="mes" required></select>
-
-    <label>Ano *</label>
-    <select id="ano" required></select>
-
-    <h2>Cirurgias realizadas</h2>
-    <table id="tabela-cirurgias">
-      <thead>
-        <tr><th>Tipo de Cirurgia</th><th>Quantidade</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Cirurgia Geral rotina</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-        <tr><td>Cirurgia Urológica</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-        <tr><td>Cabeça e Pescoço</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-        <tr><td>Cirurgia Torácica</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-        <tr><td>Buco Maxilo</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-        <tr><td>Cirurgia de Mão</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-        <tr><td>Otorrino</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-        <tr><td>Ortopedia</td><td><input type="number" min="0" value="0" class="qtd"></td></tr>
-      </tbody>
-    </table>
-
-    <h3>Outras Especialidades</h3>
-    <table style="width:100%;">
-      <thead><tr><th>Tipo de Cirurgia</th><th>Quantidade</th><th></th></tr></thead>
-      <tbody id="outras-container"></tbody>
-    </table>
-    <button type="button" class="btn-add" id="addOutra">➕ Adicionar Cirurgia</button>
-
-    <div class="total">Total de Cirurgias: <span id="total">0</span></div>
-
-    <label>Observações (opcional)</label>
-    <textarea id="observacoes" placeholder="Alguma observação relevante…"></textarea>
-
-    <div class="actions">
-      <button class="btn-primary" id="btn-enviar">🚀 Enviar</button>
-    </div>
-    <div id="status" style="margin-top:15px;text-align:center;color:#6b7280;font-size:0.95em;"></div>
-  </div>
-
-  <script>
-  // === MESES E ANOS ===
-  const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  const selMes=document.getElementById('mes'), selAno=document.getElementById('ano');
-  meses.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;selMes.appendChild(o);});
-  const anoAtual=new Date().getFullYear();
-  for(let k=anoAtual-1;k<=anoAtual+1;k++){const o=document.createElement('option');o.value=k;o.textContent=k;selAno.appendChild(o);}
-  selMes.value=String(new Date().getMonth()+1).padStart(2,'0'); selAno.value=anoAtual;
-
-  function atualizarTotal(){let t=0;document.querySelectorAll('.qtd').forEach(i=>t+=Number(i.value||0));document.getElementById('total').textContent=t;}
-  document.addEventListener('input',e=>{if(e.target.classList.contains('qtd')) atualizarTotal();});
-  document.getElementById('addOutra').addEventListener('click',()=>{const tbody=document.getElementById('outras-container');const tr=document.createElement('tr');tr.innerHTML=`<td><input type="text" placeholder="Digite o nome da cirurgia" style="width:100%"></td><td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td><td><button class="remove-btn">❌</button></td>`;tr.querySelector('.remove-btn').onclick=()=>{tr.remove();atualizarTotal();};tbody.appendChild(tr);});
-
-  function coletarDados(){
-    const meta={
-      unidade:document.getElementById('unidade').value,
-      municipio:document.getElementById('municipio').value,
-      responsavel:document.getElementById('responsavel').value,
-      contato:document.getElementById('contato').value,
-      mes:document.getElementById('mes').value,
-      ano:document.getElementById('ano').value,
-      observacoes:document.getElementById('observacoes').value,
-      enviadoEm:new Date().toISOString()
-    };
-    const tipos=[...document.querySelectorAll('#tabela-cirurgias tbody tr')].map(tr=>({tipo:tr.cells[0].textContent.trim(),quantidade:Number(tr.querySelector('.qtd').value||0)}));
-    const outras=[...document.querySelectorAll('#outras-container tr')].map(tr=>({tipo:tr.querySelector('input[type=text]').value||'Outras',quantidade:Number(tr.querySelector('input[type=number]').value||0)}));
-    return {meta,tipos:[...tipos,...outras]};
-  }
-
-  document.getElementById('btn-enviar').addEventListener('click', async ()=>{
-    const st=document.getElementById('status');
-    const payload=coletarDados();
-    if(!payload.meta.unidade){st.textContent="⚠️ Selecione uma unidade antes de enviar.";return;}
-    st.textContent="⏳ Enviando dados...";
-    const key='MINHA_CHAVE_NAO_VAZA_2025';
-    const url='https://script.google.com/macros/s/SEU_CODIGO_DO_APP_SCRIPT/exec?key='+key;
-    try{
-      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      const data=await r.json();
-      if(data.ok){
-        st.textContent=`✅ Envio concluído: ${data.inserted} linha(s) gravada(s)!`;
-        document.querySelectorAll('.qtd').forEach(i=>i.value=0);
-        document.getElementById('outras-container').innerHTML='';
-        atualizarTotal();
-      } else {
-        st.textContent=`⚠️ Erro: ${data.error||'Erro desconhecido'}`;
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registro de Cirurgias Eletivas</title>
+    <style>
+      body {
+        font-family: "Inter", Arial, sans-serif;
+        background: linear-gradient(180deg, #f7f7fb 0%, #f0f0f8 100%);
+        margin: 0;
+        color: #1f2937;
       }
-    }catch(e){
-      st.textContent=`⚠️ Falha de rede: ${e.message}`;
-    }
-  });
-  </script>
-</body>
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease-in-out;
+      }
+      .container:hover {
+        transform: translateY(-2px);
+      }
+      h1 {
+        text-align: center;
+        color: #4c1d95;
+        margin-bottom: 10px;
+        font-size: 1.8em;
+      }
+      h2 {
+        color: #374151;
+        border-bottom: 2px solid #6d28d9;
+        padding-bottom: 5px;
+        margin-top: 30px;
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: 600;
+        color: #374151;
+      }
+      select,
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+        background-color: #fff;
+      }
+      select:focus,
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #6d28d9;
+        box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      th,
+      td {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 12px 10px;
+        text-align: left;
+        vertical-align: middle;
+      }
+      th {
+        background-color: #f9fafb;
+        font-weight: 700;
+        color: #4b5563;
+      }
+      tr:nth-child(even) td {
+        background-color: #f9fafc;
+      }
+      tr:hover td {
+        background-color: #eef2ff;
+      }
+      .qtd {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+      }
+      .qtd:focus {
+        border-color: #6d28d9;
+        box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
+      }
+      .remove-btn {
+        background: none;
+        border: none;
+        color: #dc2626;
+        font-weight: bold;
+        font-size: 20px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+      .remove-btn:hover {
+        transform: scale(1.2);
+      }
+      .btn-add {
+        margin-top: 15px;
+        background-color: #10b981;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.2s ease;
+      }
+      .btn-add:hover {
+        background-color: #059669;
+      }
+      .total {
+        font-weight: bold;
+        color: #059669;
+        margin-top: 20px;
+        font-size: 1.1em;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      button.btn-primary {
+        background-color: #6d28d9;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button.btn-primary:hover {
+        background-color: #4c1d95;
+      }
+      button.btn-secondary {
+        background-color: #e5e7eb;
+        color: #374151;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button.btn-secondary:hover {
+        background-color: #d1d5db;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Registro de Cirurgias Eletivas</h1>
+
+      <label for="unidade">Unidade de Saúde *</label>
+      <select id="unidade" required>
+        <option value="">Selecione...</option>
+        <option>Fundação Hospital Adriano Jorge</option>
+        <option>Hospital Geraldo da Rocha</option>
+        <option>FCECON</option>
+        <option>Hospital Francisca Mendes</option>
+        <option>ICAM</option>
+        <option>Chapot Prevost</option>
+      </select>
+
+      <label>Município</label>
+      <input type="text" id="municipio" value="Manaus/AM" readonly />
+
+      <label>Responsável pelo preenchimento *</label>
+      <input type="text" id="responsavel" required />
+
+      <label>Contato (e-mail ou telefone)</label>
+      <input type="text" id="contato" />
+
+      <label>Mês de referência *</label>
+      <select id="mes" required></select>
+
+      <label>Ano *</label>
+      <select id="ano" required></select>
+
+      <h2>Cirurgias realizadas</h2>
+      <table id="tabela-cirurgias">
+        <thead>
+          <tr>
+            <th>Tipo de Cirurgia</th>
+            <th>Quantidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cirurgia Geral rotina</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+          <tr>
+            <td>Cirurgia Urológica</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+          <tr>
+            <td>Cabeça e Pescoço</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+          <tr>
+            <td>Cirurgia Torácica</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+          <tr>
+            <td>Buco Maxilo</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+          <tr>
+            <td>Cirurgia de Mão</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+          <tr>
+            <td>Otorrino</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+          <tr>
+            <td>Ortopedia</td>
+            <td><input type="number" min="0" value="0" class="qtd" /></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Outras Especialidades</h3>
+      <table style="width: 100%">
+        <thead>
+          <tr>
+            <th>Tipo de Cirurgia</th>
+            <th>Quantidade</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="outras-container"></tbody>
+      </table>
+      <button type="button" class="btn-add" id="addOutra">
+        ➕ Adicionar Cirurgia
+      </button>
+
+      <div class="total">Total de Cirurgias: <span id="total">0</span></div>
+
+      <label>Observações (opcional)</label>
+      <textarea
+        id="observacoes"
+        placeholder="Alguma observação relevante…"
+      ></textarea>
+
+      <div class="actions">
+        <button class="btn-primary" id="btn-enviar">🚀 Enviar</button>
+      </div>
+      <div
+        id="status"
+        style="
+          margin-top: 15px;
+          text-align: center;
+          color: #6b7280;
+          font-size: 0.95em;
+        "
+      ></div>
+    </div>
+
+    <script>
+      // === MESES E ANOS ===
+      const meses = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro",
+      ];
+      const selMes = document.getElementById("mes"),
+        selAno = document.getElementById("ano");
+      meses.forEach((m, i) => {
+        const o = document.createElement("option");
+        o.value = String(i + 1).padStart(2, "0");
+        o.textContent = m;
+        selMes.appendChild(o);
+      });
+      const anoAtual = new Date().getFullYear();
+      for (let k = anoAtual - 1; k <= anoAtual + 1; k++) {
+        const o = document.createElement("option");
+        o.value = k;
+        o.textContent = k;
+        selAno.appendChild(o);
+      }
+      selMes.value = String(new Date().getMonth() + 1).padStart(2, "0");
+      selAno.value = anoAtual;
+
+      function atualizarTotal() {
+        let t = 0;
+        document
+          .querySelectorAll(".qtd")
+          .forEach((i) => (t += Number(i.value || 0)));
+        document.getElementById("total").textContent = t;
+      }
+      document.addEventListener("input", (e) => {
+        if (e.target.classList.contains("qtd")) atualizarTotal();
+      });
+      document.getElementById("addOutra").addEventListener("click", () => {
+        const tbody = document.getElementById("outras-container");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td><input type="text" placeholder="Digite o nome da cirurgia" style="width:100%"></td><td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td><td><button class="remove-btn">❌</button></td>`;
+        tr.querySelector(".remove-btn").onclick = () => {
+          tr.remove();
+          atualizarTotal();
+        };
+        tbody.appendChild(tr);
+      });
+
+      function coletarDados() {
+        const meta = {
+          unidade: document.getElementById("unidade").value,
+          municipio: document.getElementById("municipio").value,
+          responsavel: document.getElementById("responsavel").value,
+          contato: document.getElementById("contato").value,
+          mes: document.getElementById("mes").value,
+          ano: document.getElementById("ano").value,
+          observacoes: document.getElementById("observacoes").value,
+          enviadoEm: new Date().toISOString(),
+        };
+        const tipos = [
+          ...document.querySelectorAll("#tabela-cirurgias tbody tr"),
+        ].map((tr) => ({
+          tipo: tr.cells[0].textContent.trim(),
+          quantidade: Number(tr.querySelector(".qtd").value || 0),
+        }));
+        const outras = [
+          ...document.querySelectorAll("#outras-container tr"),
+        ].map((tr) => ({
+          tipo: tr.querySelector("input[type=text]").value || "Outras",
+          quantidade: Number(tr.querySelector("input[type=number]").value || 0),
+        }));
+        return { meta, tipos: [...tipos, ...outras] };
+      }
+
+      document
+        .getElementById("btn-enviar")
+        .addEventListener("click", async () => {
+          const st = document.getElementById("status");
+          const payload = coletarDados();
+          if (!payload.meta.unidade) {
+            st.textContent = "⚠️ Selecione uma unidade antes de enviar.";
+            return;
+          }
+          st.textContent = "⏳ Enviando dados...";
+          const key = "MINHA_CHAVE_NAO_VAZA_2025";
+          const proxy = "https://corsproxy.io/?";
+          const endpoint =
+            "https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key=" +
+            key;
+          const url = proxy + encodeURIComponent(endpoint);
+
+          try {
+            const r = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const data = await r.json();
+            if (data.ok) {
+              st.textContent = `✅ Envio concluído: ${data.inserted} linha(s) gravada(s)!`;
+              document.querySelectorAll(".qtd").forEach((i) => (i.value = 0));
+              document.getElementById("outras-container").innerHTML = "";
+              atualizarTotal();
+            } else {
+              st.textContent = `⚠️ Erro: ${data.error || "Erro desconhecido"}`;
+            }
+          } catch (e) {
+            st.textContent = `⚠️ Falha de rede: ${e.message}`;
+          }
+        });
+    </script>
+  </body>
 </html>
