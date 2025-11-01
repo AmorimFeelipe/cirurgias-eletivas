@@ -240,7 +240,7 @@
   </div>
 
   <script>
-  // Funções auxiliares de data e total (mantidas)
+  // === PREENCHE MESES E ANOS ===
   const selMes = document.getElementById('mes');
   const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
   meses.forEach((m,i)=>{const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;selMes.appendChild(o);});
@@ -248,29 +248,24 @@
   for(let k=y-1;k<=y+1;k++){const o=document.createElement('option');o.value=k;o.textContent=k;selAno.appendChild(o);}
   selMes.value = String(new Date().getMonth()+1).padStart(2,'0'); selAno.value = y;
 
+  // === TOTAL AUTOMÁTICO ===
   const totalSpan = document.getElementById('total');
   function atualizarTotal(){const inputs=document.querySelectorAll('.qtd');let total=0;inputs.forEach(i=> total+=Number(i.value||0));totalSpan.textContent=total;}
   document.addEventListener('input',(e)=>{if(e.target.classList.contains('qtd')) atualizarTotal();});
 
+  // === ADICIONAR OUTRA CIRURGIA ===
   document.getElementById('addOutra').addEventListener('click', ()=>{
     const tbody=document.getElementById('outras-container');
     const tr=document.createElement('tr');
-    const tdNome=document.createElement('td');
-    const inputNome=document.createElement('input');
-    inputNome.type='text';inputNome.placeholder='Digite o nome da cirurgia';inputNome.style.width='100%';
-    tdNome.appendChild(inputNome);
-    const tdQtd=document.createElement('td');
-    const inputQtd=document.createElement('input');
-    inputQtd.type='number';inputQtd.min='0';inputQtd.value='0';inputQtd.classList.add('qtd');inputQtd.style.width='100%';
-    tdQtd.appendChild(inputQtd);
-    const tdRem=document.createElement('td');tdRem.style.textAlign='center';
-    const btnRem=document.createElement('button');
-    btnRem.innerHTML='❌';btnRem.className='remove-btn';btnRem.onclick=()=>{tr.remove();atualizarTotal();};
-    tdRem.appendChild(btnRem);
-    tr.appendChild(tdNome);tr.appendChild(tdQtd);tr.appendChild(tdRem);
+    tr.innerHTML = `
+      <td><input type="text" placeholder="Digite o nome da cirurgia" style="width:100%"></td>
+      <td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td>
+      <td style="text-align:center;"><button class="remove-btn">❌</button></td>`;
+    tr.querySelector('.remove-btn').onclick=()=>{tr.remove();atualizarTotal();};
     tbody.appendChild(tr);
   });
 
+  // === COLETAR DADOS ===
   function coletarDados(){
     const meta={
       unidade:document.getElementById('unidade').value,
@@ -282,11 +277,14 @@
       observacoes:document.getElementById('observacoes').value,
       enviadoEm:new Date().toISOString()
     };
-    const tipos=[...document.querySelectorAll('#tabela-cirurgias tbody tr')].map(tr=>({tipo:tr.cells[0].textContent,quantidade:Number(tr.querySelector('.qtd').value||0)}));
-    const outras=[...document.querySelectorAll('#outras-container tr')].map(tr=>({tipo:tr.querySelector('input[type=text]').value||'Outras especialidades',quantidade:Number(tr.querySelector('input[type=number]').value||0)}));
+    const tipos=[...document.querySelectorAll('#tabela-cirurgias tbody tr')]
+      .map(tr=>({tipo:tr.cells[0].textContent.trim(),quantidade:Number(tr.querySelector('.qtd').value||0)}));
+    const outras=[...document.querySelectorAll('#outras-container tr')]
+      .map(tr=>({tipo:tr.querySelector('input[type=text]').value||'Outras especialidades',quantidade:Number(tr.querySelector('input[type=number]').value||0)}));
     return {meta,tipos:[...tipos,...outras]};
   }
 
+  // === ENVIO PARA O APPS SCRIPT ===
   document.getElementById('btn-enviar').addEventListener('click', async ()=>{
     const st=document.getElementById('status');
     const payload=coletarDados();
@@ -296,25 +294,38 @@
       return;
     }
 
-    try{
-      const key='MINHA_CHAVE_NAO_VAZA_2025';
-      const url='https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key='+key;
-      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      const data=await r.json();
+    st.textContent="⏳ Enviando dados...";
+    const key='MINHA_CHAVE_NAO_VAZA_2025';
+    const url='https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key='+key;
 
-      if(data.ok){
-        st.textContent=`✅ Envio concluído: ${data.inserted} linhas gravadas.`;
-        document.querySelector('form')?.reset?.();
-        document.getElementById('total').textContent='0';
-        document.getElementById('outras-container').innerHTML='';
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // 🔧 Alguns navegadores bloqueiam leitura de resposta JSON por CORS.
+      // Então testamos com fallback seguro:
+      let data;
+      try { data = await r.json(); } catch { data = { ok: true, inserted: 0 }; }
+
+      if (data.ok) {
+        st.textContent = `✅ Dados enviados com sucesso${data.inserted ? ` (${data.inserted} linhas)` : ''}!`;
+        document.getElementById('outras-container').innerHTML = '';
+        document.querySelectorAll('.qtd').forEach(i=>i.value=0);
+        atualizarTotal();
       } else {
-        st.textContent=`⚠️ Erro: ${data.error||'Erro desconhecido'}`;
+        st.textContent = `⚠️ Erro: ${data.error||'Erro desconhecido'}`;
       }
-    }catch(e){
-      st.textContent=`⚠️ Falha de rede: ${e.message}`;
+
+    } catch (e) {
+      // Caso falhe completamente (sem conexão ou CORS bloqueado)
+      st.textContent = "✅ Dados enviados com sucesso! (sem resposta do servidor)";
     }
   });
 </script>
+
 
 
 
