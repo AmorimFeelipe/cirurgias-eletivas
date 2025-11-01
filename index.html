@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro de Cirurgias Eletivas</title>
+  <style>
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(180deg, #f7f7fb 0%, #f0f0f8 100%);
+      margin: 0;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease-in-out;
+    }
+    .container:hover { transform: translateY(-2px); }
+
+    h1 {
+      text-align: center;
+      color: #4c1d95;
+      margin-bottom: 10px;
+      font-size: 1.8em;
+    }
+    h2 {
+      color: #374151;
+      border-bottom: 2px solid #6d28d9;
+      padding-bottom: 5px;
+      margin-top: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+      background-color: #fff;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #6d28d9;
+      box-shadow: 0 0 0 3px rgba(109,40,217,0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px 10px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #f9fafb;
+      font-weight: 700;
+      color: #4b5563;
+    }
+    tr:nth-child(even) td {
+      background-color: #f9fafc;
+    }
+    tr:hover td {
+      background-color: #eef2ff;
+    }
+
+    .qtd {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    .qtd:focus {
+      border-color: #6d28d9;
+      box-shadow: 0 0 0 3px rgba(109,40,217,0.15);
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #dc2626;
+      font-weight: bold;
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .remove-btn:hover { transform: scale(1.2); }
+
+    .btn-add {
+      margin-top: 15px;
+      background-color: #10b981;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+    .btn-add:hover { background-color: #059669; }
+
+    .total {
+      font-weight: bold;
+      color: #059669;
+      margin-top: 20px;
+      font-size: 1.1em;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button.btn-primary {
+      background-color: #6d28d9;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.btn-primary:hover { background-color: #4c1d95; }
+
+    button.btn-secondary {
+      background-color: #e5e7eb;
+      color: #374151;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.btn-secondary:hover { background-color: #d1d5db; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Registro de Cirurgias Eletivas</h1>
+
+    <label for="unidade">Unidade de Saúde *</label>
+    <select id="unidade" required>
+      <option value="">Selecione...</option>
+      <option>Fundação Hospital Adriano Jorge</option>
+      <option>Hospital Geraldo da Rocha</option>
+      <option>FCECON</option>
+      <option>Hospital Francisca Mendes</option>
+      <option>ICAM</option>
+      <option>Chapot Prevost</option>
+    </select>
+
+    <label>Município</label>
+    <input type="text" id="municipio" value="Manaus/AM" readonly />
+
+    <label>Responsável pelo preenchimento *</label>
+    <input type="text" id="responsavel" required />
+
+    <label>Contato (e-mail ou telefone)</label>
+    <input type="text" id="contato" />
+
+    <label>Mês de referência *</label>
+    <select id="mes" required></select>
+
+    <label>Ano *</label>
+    <select id="ano" required></select>
+
+    <h2>Cirurgias realizadas</h2>
+    <table id="tabela-cirurgias">
+      <thead>
+        <tr>
+          <th style="width: 70%;">Tipo de Cirurgia</th>
+          <th style="width: 30%;">Quantidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Cirurgia Geral rotina</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Cirurgia Urológica</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Cabeça e Pescoço</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Cirurgia Torácica</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Buco Maxilo</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Cirurgia de Mão</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Otorrino</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+        <tr><td>Ortopedia</td><td><input type="number" min="0" value="0" class="qtd" /></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:20px; color:#4b5563;">Outras Especialidades</h3>
+    <table id="outras-tabela" style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="width:70%;">Tipo de Cirurgia</th>
+          <th style="width:25%;">Quantidade</th>
+          <th style="width:5%; text-align:center;">Remover</th>
+        </tr>
+      </thead>
+      <tbody id="outras-container"></tbody>
+    </table>
+
+    <button type="button" class="btn-add" id="addOutra">➕ Adicionar Cirurgia</button>
+
+    <div class="total">Total de Cirurgias: <span id="total">0</span></div>
+
+    <label>Observações (opcional)</label>
+    <textarea id="observacoes" placeholder="Alguma observação relevante…"></textarea>
+
+    <div class="actions">
+      <button class="btn-primary" id="btn-csv">⬇️ Baixar CSV</button>
+      <button class="btn-secondary" id="btn-enviar">🚀 Enviar (POST opcional)</button>
+    </div>
+    <div id="status" style="margin-top:15px;text-align:center;color:#6b7280;font-size:0.95em;"></div>
+  </div>
+
+  <script>
+    const selMes = document.getElementById('mes');
+    const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+    meses.forEach((m,i)=>{
+      const o=document.createElement('option');o.value=String(i+1).padStart(2,'0');o.textContent=m;selMes.appendChild(o);
+    });
+
+    const selAno = document.getElementById('ano');
+    const y = new Date().getFullYear();
+    for(let k=y-1;k<=y+1;k++){const o=document.createElement('option');o.value=k;o.textContent=k;selAno.appendChild(o);}
+    selMes.value = String(new Date().getMonth()+1).padStart(2,'0'); selAno.value = y;
+
+    const totalSpan = document.getElementById('total');
+
+    function atualizarTotal(){
+      const inputs = document.querySelectorAll('.qtd');
+      let total = 0;
+      inputs.forEach(i=> total += Number(i.value||0));
+      totalSpan.textContent = total;
+    }
+
+    document.addEventListener('input', (e)=>{
+      if(e.target.classList.contains('qtd')) atualizarTotal();
+    });
+
+    document.getElementById('addOutra').addEventListener('click', ()=>{
+      const tbody = document.getElementById('outras-container');
+      const tr = document.createElement('tr');
+
+      const tdNome = document.createElement('td');
+      const inputNome = document.createElement('input');
+      inputNome.type = 'text';
+      inputNome.placeholder = 'Digite o nome da cirurgia';
+      inputNome.style.width = '100%';
+      tdNome.appendChild(inputNome);
+
+      const tdQtd = document.createElement('td');
+      const inputQtd = document.createElement('input');
+      inputQtd.type = 'number';
+      inputQtd.min = '0';
+      inputQtd.value = '0';
+      inputQtd.classList.add('qtd');
+      inputQtd.style.width = '100%';
+      tdQtd.appendChild(inputQtd);
+
+      const tdRem = document.createElement('td');
+      tdRem.style.textAlign = 'center';
+      const btnRem = document.createElement('button');
+      btnRem.innerHTML = '❌';
+      btnRem.className = 'remove-btn';
+      btnRem.onclick = ()=> { tr.remove(); atualizarTotal(); };
+      tdRem.appendChild(btnRem);
+
+      tr.appendChild(tdNome);
+      tr.appendChild(tdQtd);
+      tr.appendChild(tdRem);
+
+      tbody.appendChild(tr);
+    });
+
+    function coletarDados(){
+      const meta = {
+        unidade: document.getElementById('unidade').value,
+        municipio: document.getElementById('municipio').value,
+        responsavel: document.getElementById('responsavel').value,
+        contato: document.getElementById('contato').value,
+        mes: document.getElementById('mes').value,
+        ano: document.getElementById('ano').value,
+        observacoes: document.getElementById('observacoes').value,
+        enviadoEm: new Date().toISOString()
+      };
+
+      const tipos = [...document.querySelectorAll('#tabela-cirurgias tbody tr')].map(tr=>({
+        tipo: tr.cells[0].textContent,
+        quantidade: Number(tr.querySelector('.qtd').value||0)
+      }));
+
+      const outras = [...document.querySelectorAll('#outras-container tr')].map(tr=>({
+        tipo: tr.querySelector('input[type=text]').value || 'Outras especialidades',
+        quantidade: Number(tr.querySelector('input[type=number]').value||0)
+      }));
+
+      return {meta, tipos: [...tipos, ...outras]};
+    }
+
+    function toCSV(rows){
+      const cols = Object.keys(rows[0]);
+      const esc = s=> '"'+String(s).replaceAll('"','""')+'"';
+      const head = cols.map(esc).join(',');
+      const body = rows.map(r=> cols.map(c=> esc(r[c]??'')).join(',')).join('\n');
+      return head+'\n'+body;
+    }
+
+    document.getElementById('btn-csv').addEventListener('click', ()=>{
+      const {meta, tipos} = coletarDados();
+      const linhas = tipos.map(t=> ({...meta, tipo: t.tipo, quantidade: t.quantidade}));
+      const csv = toCSV(linhas);
+      const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `cirurgias_${meta.ano}-${meta.mes}.csv`; a.click();
+      setTimeout(()=> URL.revokeObjectURL(url), 5000);
+    });
+
+    document.getElementById('btn-enviar').addEventListener('click', async ()=>{
+      const st = document.getElementById('status');
+      const payload = coletarDados();
+      console.log('Payload', payload);
+      st.textContent = 'Pré-visualização no console. Adicione integração POST se desejar.';
+    });
+  </script>
+</body>
+</html>
