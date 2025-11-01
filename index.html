@@ -344,11 +344,30 @@
     });
 
     document.getElementById('btn-enviar').addEventListener('click', async ()=>{
-      const st = document.getElementById('status');
-      const payload = coletarDados();
-      console.log('Payload', payload);
-      st.textContent = 'Pré-visualização no console. Adicione integração POST se desejar.';
+  const st = document.getElementById('status');
+  const payload = coletarDados();
+
+  try {
+    const key = 'MINHA_CHAVE_NAO_VAZA_2025'; // mesma chave usada no Apps Script
+    const url = 'https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key=' + key;
+
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
+
+    const data = await r.json();
+    if (data.ok) {
+      st.textContent = `✅ Envio concluído: ${data.inserted} linhas gravadas na planilha.`;
+    } else {
+      st.textContent = `⚠️ Erro ao enviar: ${data.error || 'desconhecido'}`;
+    }
+  } catch (e) {
+    st.textContent = `⚠️ Falha de rede: ${e.message}`;
+  }
+});
+
   </script>
 </body>
 </html>
