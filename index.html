@@ -23,6 +23,7 @@
       .container:hover {
         transform: translateY(-2px);
       }
+
       h1 {
         text-align: center;
         color: #4c1d95;
@@ -35,12 +36,14 @@
         padding-bottom: 5px;
         margin-top: 30px;
       }
+
       label {
         display: block;
         margin-top: 15px;
         font-weight: 600;
         color: #374151;
       }
+
       select,
       input,
       textarea {
@@ -54,6 +57,7 @@
         box-sizing: border-box;
         background-color: #fff;
       }
+
       select:focus,
       input:focus,
       textarea:focus {
@@ -61,6 +65,7 @@
         border-color: #6d28d9;
         box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
       }
+
       table {
         width: 100%;
         border-collapse: collapse;
@@ -87,6 +92,7 @@
       tr:hover td {
         background-color: #eef2ff;
       }
+
       .qtd {
         width: 100%;
         border-radius: 8px;
@@ -100,6 +106,7 @@
         border-color: #6d28d9;
         box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
       }
+
       .remove-btn {
         background: none;
         border: none;
@@ -112,6 +119,7 @@
       .remove-btn:hover {
         transform: scale(1.2);
       }
+
       .btn-add {
         margin-top: 15px;
         background-color: #10b981;
@@ -127,12 +135,14 @@
       .btn-add:hover {
         background-color: #059669;
       }
+
       .total {
         font-weight: bold;
         color: #059669;
         margin-top: 20px;
         font-size: 1.1em;
       }
+
       .actions {
         display: flex;
         gap: 10px;
@@ -140,6 +150,7 @@
         justify-content: center;
         flex-wrap: wrap;
       }
+
       button.btn-primary {
         background-color: #6d28d9;
         color: #fff;
@@ -152,6 +163,7 @@
       button.btn-primary:hover {
         background-color: #4c1d95;
       }
+
       button.btn-secondary {
         background-color: #e5e7eb;
         color: #374151;
@@ -163,6 +175,12 @@
       }
       button.btn-secondary:hover {
         background-color: #d1d5db;
+      }
+
+      #status {
+        text-align: center;
+        font-size: 0.95em;
+        margin-top: 20px;
       }
     </style>
   </head>
@@ -240,20 +258,19 @@
         </tbody>
       </table>
 
-      <h3>Outras Especialidades</h3>
-      <table style="width: 100%">
+      <h3 style="margin-top: 20px; color: #4b5563">Outras Especialidades</h3>
+      <table id="outras-tabela">
         <thead>
           <tr>
             <th>Tipo de Cirurgia</th>
             <th>Quantidade</th>
-            <th></th>
+            <th>Remover</th>
           </tr>
         </thead>
         <tbody id="outras-container"></tbody>
       </table>
-      <button type="button" class="btn-add" id="addOutra">
-        ➕ Adicionar Cirurgia
-      </button>
+
+      <button class="btn-add" id="addOutra">➕ Adicionar Cirurgia</button>
 
       <div class="total">Total de Cirurgias: <span id="total">0</span></div>
 
@@ -264,21 +281,13 @@
       ></textarea>
 
       <div class="actions">
-        <button class="btn-primary" id="btn-enviar">🚀 Enviar</button>
+        <button class="btn-primary" id="btn-enviar">🚀 Enviar Dados</button>
       </div>
-      <div
-        id="status"
-        style="
-          margin-top: 15px;
-          text-align: center;
-          color: #6b7280;
-          font-size: 0.95em;
-        "
-      ></div>
+      <div id="status"></div>
     </div>
 
     <script>
-      // === MESES E ANOS ===
+      // === PREENCHE MESES E ANOS ===
       const meses = [
         "Janeiro",
         "Fevereiro",
@@ -293,88 +302,86 @@
         "Novembro",
         "Dezembro",
       ];
-      const selMes = document.getElementById("mes"),
-        selAno = document.getElementById("ano");
+      const selMes = document.getElementById("mes");
       meses.forEach((m, i) => {
         const o = document.createElement("option");
         o.value = String(i + 1).padStart(2, "0");
         o.textContent = m;
         selMes.appendChild(o);
       });
-      const anoAtual = new Date().getFullYear();
-      for (let k = anoAtual - 1; k <= anoAtual + 1; k++) {
+      const selAno = document.getElementById("ano");
+      const y = new Date().getFullYear();
+      for (let k = y - 1; k <= y + 1; k++) {
         const o = document.createElement("option");
         o.value = k;
         o.textContent = k;
         selAno.appendChild(o);
       }
       selMes.value = String(new Date().getMonth() + 1).padStart(2, "0");
-      selAno.value = anoAtual;
+      selAno.value = y;
 
+      // === SOMA AUTOMÁTICA ===
       function atualizarTotal() {
-        let t = 0;
-        document
-          .querySelectorAll(".qtd")
-          .forEach((i) => (t += Number(i.value || 0)));
-        document.getElementById("total").textContent = t;
+        const inputs = document.querySelectorAll(".qtd");
+        let total = 0;
+        inputs.forEach((i) => (total += Number(i.value || 0)));
+        document.getElementById("total").textContent = total;
       }
       document.addEventListener("input", (e) => {
         if (e.target.classList.contains("qtd")) atualizarTotal();
       });
+
+      // === ADICIONAR OUTRA ===
       document.getElementById("addOutra").addEventListener("click", () => {
-        const tbody = document.getElementById("outras-container");
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td><input type="text" placeholder="Digite o nome da cirurgia" style="width:100%"></td><td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td><td><button class="remove-btn">❌</button></td>`;
+        tr.innerHTML = `<td><input type="text" placeholder="Nome da cirurgia" style="width:100%"></td>
+      <td><input type="number" min="0" value="0" class="qtd" style="width:100%"></td>
+      <td style="text-align:center;"><button class="remove-btn">❌</button></td>`;
         tr.querySelector(".remove-btn").onclick = () => {
           tr.remove();
           atualizarTotal();
         };
-        tbody.appendChild(tr);
+        document.getElementById("outras-container").appendChild(tr);
       });
 
-      function coletarDados() {
-        const meta = {
-          unidade: document.getElementById("unidade").value,
-          municipio: document.getElementById("municipio").value,
-          responsavel: document.getElementById("responsavel").value,
-          contato: document.getElementById("contato").value,
-          mes: document.getElementById("mes").value,
-          ano: document.getElementById("ano").value,
-          observacoes: document.getElementById("observacoes").value,
-          enviadoEm: new Date().toISOString(),
-        };
-        const tipos = [
-          ...document.querySelectorAll("#tabela-cirurgias tbody tr"),
-        ].map((tr) => ({
-          tipo: tr.cells[0].textContent.trim(),
-          quantidade: Number(tr.querySelector(".qtd").value || 0),
-        }));
-        const outras = [
-          ...document.querySelectorAll("#outras-container tr"),
-        ].map((tr) => ({
-          tipo: tr.querySelector("input[type=text]").value || "Outras",
-          quantidade: Number(tr.querySelector("input[type=number]").value || 0),
-        }));
-        return { meta, tipos: [...tipos, ...outras] };
-      }
-
+      // === ENVIO ===
       document
         .getElementById("btn-enviar")
         .addEventListener("click", async () => {
           const st = document.getElementById("status");
-          const payload = coletarDados();
-          if (!payload.meta.unidade) {
-            st.textContent = "⚠️ Selecione uma unidade antes de enviar.";
-            return;
-          }
           st.textContent = "⏳ Enviando dados...";
           const key = "MINHA_CHAVE_NAO_VAZA_2025";
-          // Proxy gratuito que injeta os headers CORS automaticamente
           const proxy = "https://corsproxy.io/?";
           const endpoint =
             "https://script.google.com/macros/s/AKfycbwkpZkRfJj89AGHJHlEDPqw7oluFz7iYTLEG4E0L5Q0em6bBu80nfeK32yrR9yUwtqY/exec?key=" +
             key;
           const url = proxy + encodeURIComponent(endpoint);
+
+          const meta = {
+            unidade: document.getElementById("unidade").value,
+            municipio: document.getElementById("municipio").value,
+            responsavel: document.getElementById("responsavel").value,
+            contato: document.getElementById("contato").value,
+            mes: document.getElementById("mes").value,
+            ano: document.getElementById("ano").value,
+            observacoes: document.getElementById("observacoes").value,
+            enviadoEm: new Date().toISOString(),
+          };
+          const tipos = [
+            ...document.querySelectorAll("#tabela-cirurgias tbody tr"),
+          ].map((tr) => ({
+            tipo: tr.cells[0].textContent.trim(),
+            quantidade: Number(tr.querySelector(".qtd").value || 0),
+          }));
+          const outras = [
+            ...document.querySelectorAll("#outras-container tr"),
+          ].map((tr) => ({
+            tipo: tr.querySelector("input[type=text]").value || "Outras",
+            quantidade: Number(
+              tr.querySelector("input[type=number]").value || 0
+            ),
+          }));
+          const payload = { meta, tipos: [...tipos, ...outras] };
 
           try {
             const r = await fetch(url, {
@@ -382,16 +389,21 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
             });
-            const data = await r.json();
+            let data;
+            try {
+              data = await r.json();
+            } catch {
+              const txt = await r.text();
+              console.warn("Resposta não JSON:", txt.slice(0, 200));
+              data = { ok: false, error: "Resposta inválida do servidor" };
+            }
             if (data.ok) {
-              st.textContent = `✅ Envio concluído: ${data.inserted} linha(s) gravada(s)!`;
-              document.querySelectorAll(".qtd").forEach((i) => (i.value = 0));
-              document.getElementById("outras-container").innerHTML = "";
-              atualizarTotal();
+              st.textContent = `✅ Dados enviados com sucesso (${data.inserted} linhas).`;
             } else {
-              st.textContent = `⚠️ Erro: ${data.error || "Erro desconhecido"}`;
+              st.textContent = `⚠️ Erro: ${data.error}`;
             }
           } catch (e) {
+            console.error("Falha de rede:", e);
             st.textContent = `⚠️ Falha de rede: ${e.message}`;
           }
         });
